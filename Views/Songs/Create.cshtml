@@ -3,7 +3,7 @@
     ViewData["Title"] = "Create Song";
 }
 
-<div class="row mb-4">
+<div class="row page-header">
     <div class="col-12">
         <h1>Add New Song</h1>
     </div>
@@ -11,7 +11,7 @@
 
 <div class="row">
     <div class="col-md-8">
-        <form method="post" action="/Songs/Create">
+        <form method="post" action="/Songs/Create" class="song-form">
             <div class="mb-3">
                 <label for="Title" class="form-label">Title</label>
                 <input type="text" class="form-control" id="Title" name="Title" value="@Model.Title" required />
@@ -36,7 +36,7 @@
                 <label for="Notes" class="form-label">Notes</label>
                 <textarea class="form-control" id="Notes" name="Notes" rows="3">@Model.Notes</textarea>
             </div>
-            <div class="mb-3">
+            <div class="form-section">
                 <div class="form-check">
                     <input type="checkbox" class="form-check-input" id="IsFavorite" name="IsFavorite" @(Model.IsFavorite ? "checked" : "") />
                     <label class="form-check-label" for="IsFavorite">Mark as Favorite</label>

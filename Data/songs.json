@@ -7,7 +7,11 @@
     "genre": "Rock",
     "year": 1975,
     "isFavorite": true,
-    "notes": "Epic operatic rock masterpiece"
+    "notes": "Epic operatic rock masterpiece",
+    "imageUrl": "http://fonduaunoir.fr/wp-content/uploads/2016/03/Queen.jpg",
+    "playbackUrl": "http://youtube.com/watch?v=fJ9rUzIMcZQ",
+    "dateAdded": "2025-11-14T18:30:00Z",
+    "duration": "5:55"
   },
   {
     "id": 2,
@@ -17,7 +21,11 @@
     "genre": "Rock",
     "year": 1971,
     "isFavorite": true,
-    "notes": "Iconic peace anthem"
+    "notes": "Iconic peace anthem",
+    "imageUrl": "https://placehold.co/320x320/355cd7/f5f5f5?text=Imagine",
+    "playbackUrl": "",
+    "dateAdded": "2025-12-03T09:15:00Z",
+    "duration": "3:04"
   },
   {
     "id": 3,
@@ -27,7 +35,11 @@
     "genre": "Rock",
     "year": 1971,
     "isFavorite": false,
-    "notes": "Progressive rock masterpiece"
+    "notes": "Progressive rock masterpiece",
+    "imageUrl": "https://placehold.co/320x320/5a3d2b/f5f5f5?text=Led+Zeppelin+IV",
+    "playbackUrl": "",
+    "dateAdded": "2026-01-08T21:05:00Z",
+    "duration": "8:02"
   },
   {
     "id": 4,
@@ -37,7 +49,11 @@
     "genre": "Rock",
     "year": 1976,
     "isFavorite": true,
-    "notes": "Dark and mysterious"
+    "notes": "Dark and mysterious",
+    "imageUrl": "https://placehold.co/320x320/8f56ff/f5f5f5?text=Hotel+California",
+    "playbackUrl": "",
+    "dateAdded": "2026-02-17T14:20:00Z",
+    "duration": "6:31"
   },
   {
     "id": 5,
@@ -47,6 +63,80 @@
     "genre": "Pop",
     "year": 1983,
     "isFavorite": false,
-    "notes": "King of Pop classic"
+    "notes": "King of Pop classic",
+    "imageUrl": "https://placehold.co/320x320/1f6f5f/f5f5f5?text=Thriller",
+    "playbackUrl": "",
+    "dateAdded": "2026-03-04T11:45:00Z",
+    "duration": "4:54"
+  },
+  {
+    "id": 6,
+    "title": "Smells Like Teen Spirit",
+    "artist": "Nirvana",
+    "album": "Nevermind",
+    "genre": "Grunge",
+    "year": 1991,
+    "isFavorite": true,
+    "notes": "Defining grunge anthem",
+    "imageUrl": "https://placehold.co/320x320/245f86/f5f5f5?text=Nevermind",
+    "playbackUrl": "",
+    "dateAdded": "2026-03-08T10:20:00Z",
+    "duration": "5:01"
+  },
+  {
+    "id": 7,
+    "title": "Like a Prayer",
+    "artist": "Madonna",
+    "album": "Like a Prayer",
+    "genre": "Pop",
+    "year": 1989,
+    "isFavorite": false,
+    "notes": "Pop classic with gospel energy",
+    "imageUrl": "https://placehold.co/320x320/7b2951/f5f5f5?text=Like+a+Prayer",
+    "playbackUrl": "",
+    "dateAdded": "2026-03-10T16:05:00Z",
+    "duration": "5:43"
+  },
+  {
+    "id": 8,
+    "title": "Lose Yourself",
+    "artist": "Eminem",
+    "album": "8 Mile",
+    "genre": "Hip-Hop",
+    "year": 2002,
+    "isFavorite": true,
+    "notes": "Oscar-winning motivational track",
+    "imageUrl": "https://placehold.co/320x320/3b3b3b/f5f5f5?text=8+Mile",
+    "playbackUrl": "",
+    "dateAdded": "2026-03-14T08:40:00Z",
+    "duration": "5:26"
+  },
+  {
+    "id": 9,
+    "title": "Clocks",
+    "artist": "Coldplay",
+    "album": "A Rush of Blood to the Head",
+    "genre": "Alternative",
+    "year": 2002,
+    "isFavorite": false,
+    "notes": "Piano-driven anthem",
+    "imageUrl": "https://placehold.co/320x320/355cd7/f5f5f5?text=A+Rush+of+Blood",
+    "playbackUrl": "",
+    "dateAdded": "2026-03-18T13:10:00Z",
+    "duration": "5:07"
+  },
+  {
+    "id": 10,
+    "title": "Blinding Lights",
+    "artist": "The Weeknd",
+    "album": "After Hours",
+    "genre": "Synthwave",
+    "year": 2020,
+    "isFavorite": true,
+    "notes": "Modern pop hit with retro pulse",
+    "imageUrl": "https://placehold.co/320x320/b41f35/f5f5f5?text=After+Hours",
+    "playbackUrl": "",
+    "dateAdded": "2026-03-22T19:30:00Z",
+    "duration": "3:20"
   }
 ]

@@ -7,6 +7,12 @@ public class JsonSongService : ISongService
 {
     private readonly string _jsonFilePath;
     private readonly object _fileLock = new();
+    private static readonly JsonSerializerOptions SerializerOptions = new()
+    {
+        PropertyNameCaseInsensitive = true,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        WriteIndented = true
+    };
 
     public JsonSongService(IWebHostEnvironment environment)
     {
@@ -34,6 +40,7 @@ public class JsonSongService : ISongService
     {
         var songs = await LoadSongsAsync();
         song.Id = songs.Count > 0 ? songs.Max(s => s.Id) + 1 : 1;
+        NormalizeSong(song);
         songs.Add(song);
         await SaveSongsAsync(songs);
         return song;
@@ -45,6 +52,8 @@ public class JsonSongService : ISongService
         var index = songs.FindIndex(s => s.Id == song.Id);
         if (index >= 0)
         {
+            MergeMissingValues(song, songs[index]);
+            NormalizeSong(song);
             songs[index] = song;
             await SaveSongsAsync(songs);
         }
@@ -107,8 +116,18 @@ public class JsonSongService : ISongService
                         return new List<Song>();
                     }
 
-                    var songs = JsonSerializer.Deserialize<List<Song>>(json);
-                    return songs ?? new List<Song>();
+                    var songs = JsonSerializer.Deserialize<List<Song>>(json, SerializerOptions);
+                    if (songs == null)
+                    {
+                        return new List<Song>();
+                    }
+
+                    foreach (var song in songs)
+                    {
+                        NormalizeSong(song);
+                    }
+
+                    return songs;
                 }
                 catch (JsonException)
                 {
@@ -130,7 +149,7 @@ public class JsonSongService : ISongService
             {
                 try
                 {
-                    var json = JsonSerializer.Serialize(songs, new JsonSerializerOptions { WriteIndented = true });
+                    var json = JsonSerializer.Serialize(songs, SerializerOptions);
                     File.WriteAllText(_jsonFilePath, json);
                 }
                 catch (IOException)
@@ -139,5 +158,44 @@ public class JsonSongService : ISongService
                 }
             }
         });
+    }
+
+    private static void NormalizeSong(Song song)
+    {
+        if (song.DateAdded == default)
+        {
+            song.DateAdded = DateTime.UtcNow;
+        }
+
+        if (string.IsNullOrWhiteSpace(song.Duration))
+        {
+            song.Duration = "0:00";
+        }
+
+        song.ImageUrl ??= string.Empty;
+        song.PlaybackUrl ??= string.Empty;
+    }
+
+    private static void MergeMissingValues(Song incomingSong, Song existingSong)
+    {
+        if (incomingSong.DateAdded == default)
+        {
+            incomingSong.DateAdded = existingSong.DateAdded;
+        }
+
+        if (string.IsNullOrWhiteSpace(incomingSong.Duration))
+        {
+            incomingSong.Duration = existingSong.Duration;
+        }
+
+        if (string.IsNullOrWhiteSpace(incomingSong.ImageUrl))
+        {
+            incomingSong.ImageUrl = existingSong.ImageUrl;
+        }
+
+        if (string.IsNullOrWhiteSpace(incomingSong.PlaybackUrl))
+        {
+            incomingSong.PlaybackUrl = existingSong.PlaybackUrl;
+        }
     }
 }

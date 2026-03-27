@@ -30,3 +30,5 @@
 /Users/miguel/Dev/copilot_test/obj/Debug/net10.0/SongManager.pdb
 /Users/miguel/Dev/copilot_test/obj/Debug/net10.0/SongManager.genruntimeconfig.cache
 /Users/miguel/Dev/copilot_test/obj/Debug/net10.0/ref/SongManager.dll
+/Users/miguel/Dev/copilot_test/obj/Debug/net10.0/SongManager.sourcelink.json
+/Users/miguel/Dev/copilot_test/obj/Debug/net10.0/compressed/kkz8v7mtep-{0}-aum7e8x1he-aum7e8x1he.gz

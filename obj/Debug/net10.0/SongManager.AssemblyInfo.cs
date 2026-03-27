@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SongManager")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bd95e2a3aaa0e1eda94d76b6f81f716e25969641")]
 [assembly: System.Reflection.AssemblyProductAttribute("SongManager")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SongManager")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

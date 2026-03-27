@@ -1,49 +1,272 @@
 @model List<SongManager.Models.Song>
+@using System.Globalization
 @{
-    ViewData["Title"] = "All Songs";
+    ViewData["Title"] = "Songs";
+    var username = User?.Identity?.IsAuthenticated == true
+        ? User.Identity?.Name
+        : Environment.UserName;
+    var songCountLabel = Model.Count == 1 ? "1 song" : $"{Model.Count} songs";
 }
 
-<div class="row mb-4">
-    <div class="col-12">
-        <h1>All Songs</h1>
-        <a href="/Songs/Create" class="btn btn-primary">Add New Song</a>
-    </div>
-</div>
+<section class="songs-page">
+    <div class="songs-hero">
+        <div class="songs-hero__art" aria-hidden="true">
+            <span class="songs-hero__art-icon"><i class="bi bi-music-note-beamed"></i></span>
+        </div>
 
-@if (Model.Count == 0)
-{
-    <div class="alert alert-info">
-        No songs found. <a href="/Songs/Create">Add your first song</a>
-    </div>
-}
-else
-{
-    <div class="row">
-        @foreach (var song in Model)
-        {
-            <div class="col-md-6 col-lg-4 mb-3">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <h5 class="card-title">@song.Title</h5>
-                            @if (song.IsFavorite)
-                            {
-                                <span class="badge bg-danger">★</span>
-                            }
-                        </div>
-                        <p class="card-text text-muted">@song.Artist</p>
-                        <p class="card-text small">@song.Album (@song.Year)</p>
-                        <p class="card-text small"><strong>Genre:</strong> @song.Genre</p>
-                    </div>
-                    <div class="card-footer bg-white">
-                        <a href="/Songs/Details/@song.Id" class="btn btn-sm btn-info">View</a>
-                        <a href="/Songs/Edit/@song.Id" class="btn btn-sm btn-warning">Edit</a>
-                        <form method="post" action="/Songs/Delete/@song.Id" style="display:inline;">
-                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
-                        </form>
-                    </div>
-                </div>
+        <div class="songs-hero__content">
+            <p class="songs-hero__eyebrow">Playlist</p>
+            <h1 class="songs-hero__title">Canciones que te gustan</h1>
+            <p class="songs-hero__meta">
+                <span class="songs-hero__user">@username</span>
+                <span class="songs-hero__separator">•</span>
+                <span>@songCountLabel</span>
+            </p>
+
+            <div class="songs-hero__actions">
+                <button type="button" class="songs-action songs-action--play" aria-label="Play liked songs">
+                    <i class="bi bi-play-fill"></i>
+                </button>
+                <button type="button" class="songs-action songs-action--secondary">
+                    <i class="bi bi-shuffle"></i>
+                    <span>Shuffle</span>
+                </button>
+                <button type="button" class="songs-action songs-action--secondary">
+                    <i class="bi bi-download"></i>
+                    <span>Download</span>
+                </button>
+                <a href="/Songs/Create" class="songs-action songs-action--secondary">
+                    <i class="bi bi-plus-lg"></i>
+                    <span>Add song</span>
+                </a>
             </div>
-        }
+        </div>
     </div>
-}
+
+    @if (Model.Count == 0)
+    {
+        <div class="songs-empty-state">
+            <div class="songs-empty-state__icon"><i class="bi bi-vinyl-fill"></i></div>
+            <h2>Your library is empty</h2>
+            <p>Add your first song to start building this playlist.</p>
+            <a href="/Songs/Create" class="songs-action songs-action--secondary">Add your first song</a>
+        </div>
+    }
+    else
+    {
+        <div class="songs-list-shell">
+            <table class="songs-table">
+                <thead>
+                    <tr>
+                        <th class="songs-table__col songs-table__col--index" scope="col">#</th>
+                        <th class="songs-table__col" scope="col">Title</th>
+                        <th class="songs-table__col songs-table__col--album" scope="col">Album</th>
+                        <th class="songs-table__col songs-table__col--date" scope="col">Date added</th>
+                        <th class="songs-table__col songs-table__col--duration" scope="col">
+                            <i class="bi bi-clock"></i>
+                            <span class="visually-hidden">Duration</span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (var i = 0; i < Model.Count; i++)
+                    {
+                        var song = Model[i];
+                        var hasPlayback = !string.IsNullOrWhiteSpace(song.PlaybackUrl);
+                        var addedDate = song.DateAdded == default
+                            ? "Recently added"
+                            : song.DateAdded.ToLocalTime().ToString("MMM d, yyyy", CultureInfo.InvariantCulture);
+                        var artworkSeed = string.Concat(
+                            (song.Title ?? string.Empty).Where(char.IsLetterOrDigit).Take(2)
+                        ).ToUpperInvariant();
+
+                        if (string.IsNullOrWhiteSpace(artworkSeed))
+                        {
+                            artworkSeed = "♪";
+                        }
+
+                        <tr class="songs-table__row">
+                            <td class="songs-table__cell songs-table__cell--index" data-label="#">
+                                <span class="songs-row-index">@(i + 1)</span>
+                                @if (hasPlayback)
+                                {
+                                    <button
+                                        type="button"
+                                        class="songs-row-play songs-row-play--button"
+                                        data-playback-url="@song.PlaybackUrl"
+                                        data-song-title="@song.Title"
+                                        data-song-artist="@song.Artist"
+                                        aria-label="Play @song.Title">
+                                        <i class="bi bi-play-fill"></i>
+                                    </button>
+                                }
+                                else
+                                {
+                                    <a class="songs-row-play" href="/Songs/Details/@song.Id" aria-label="Open @song.Title details">
+                                        <i class="bi bi-play-fill"></i>
+                                    </a>
+                                }
+                            </td>
+                            <td class="songs-table__cell" data-label="Title">
+                                <div class="song-entry">
+                                    @if (!string.IsNullOrWhiteSpace(song.ImageUrl))
+                                    {
+                                        <img
+                                            src="@song.ImageUrl"
+                                            alt="Cover art for @song.Title"
+                                            class="song-entry__art" />
+                                    }
+                                    else
+                                    {
+                                        <div class="song-entry__art song-entry__art--placeholder" aria-hidden="true">
+                                            @artworkSeed
+                                        </div>
+                                    }
+
+                                    <div class="song-entry__details">
+                                        <div class="song-entry__title-row">
+                                            @if (hasPlayback)
+                                            {
+                                                <button
+                                                    type="button"
+                                                    class="song-entry__title song-entry__title--button"
+                                                    data-playback-url="@song.PlaybackUrl"
+                                                    data-song-title="@song.Title"
+                                                    data-song-artist="@song.Artist">
+                                                    @song.Title
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <a href="/Songs/Details/@song.Id" class="song-entry__title">@song.Title</a>
+                                            }
+
+                                            @if (song.IsFavorite)
+                                            {
+                                                <span class="song-entry__favorite" title="Favorite">
+                                                    <i class="bi bi-heart-fill"></i>
+                                                </span>
+                                            }
+
+                                            <a href="/Songs/Details/@song.Id" class="song-entry__details-link" aria-label="Open @song.Title details">
+                                                <i class="bi bi-box-arrow-up-right"></i>
+                                            </a>
+                                        </div>
+
+                                        <p class="song-entry__meta">
+                                            <span>@song.Artist</span>
+                                            @if (!string.IsNullOrWhiteSpace(song.Genre))
+                                            {
+                                                <span class="song-entry__meta-separator">•</span>
+                                                <span>@song.Genre</span>
+                                            }
+                                            @if (song.Year > 0)
+                                            {
+                                                <span class="song-entry__meta-separator">•</span>
+                                                <span>@song.Year</span>
+                                            }
+                                        </p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="songs-table__cell songs-table__cell--album" data-label="Album">
+                                @song.Album
+                            </td>
+                            <td class="songs-table__cell songs-table__cell--date" data-label="Date added">
+                                @addedDate
+                            </td>
+                            <td class="songs-table__cell songs-table__cell--duration" data-label="Duration">
+                                @song.Duration
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+    <section class="songs-player" id="songsPlayer" hidden aria-live="polite">
+        <div class="songs-player__header">
+            <div>
+                <p class="songs-player__eyebrow">Now Playing</p>
+                <h2 class="songs-player__title" id="songsPlayerTitle">Select a song</h2>
+                <p class="songs-player__meta" id="songsPlayerMeta">Choose a playable track to start the demo.</p>
+            </div>
+
+            <div class="songs-player__actions">
+                <a
+                    id="songsPlayerExternalLink"
+                    class="songs-action songs-action--secondary"
+                    href="#"
+                    target="_blank"
+                    rel="noreferrer noopener">
+                    <i class="bi bi-youtube"></i>
+                    <span>Open in YouTube</span>
+                </a>
+                <button type="button" id="songsPlayerClose" class="songs-action songs-action--secondary">
+                    <i class="bi bi-x-lg"></i>
+                    <span>Close</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="songs-player__frame">
+            <iframe
+                id="songsPlayerFrame"
+                title="Song demo player"
+                src=""
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+            </iframe>
+        </div>
+    </section>
+</section>
+
+<script>
+    (() => {
+        const playButtons = document.querySelectorAll("[data-playback-url]");
+        const player = document.getElementById("songsPlayer");
+        const playerFrame = document.getElementById("songsPlayerFrame");
+        const playerTitle = document.getElementById("songsPlayerTitle");
+        const playerMeta = document.getElementById("songsPlayerMeta");
+        const playerExternalLink = document.getElementById("songsPlayerExternalLink");
+        const playerClose = document.getElementById("songsPlayerClose");
+
+        if (!playButtons.length || !player || !playerFrame || !playerTitle || !playerMeta || !playerExternalLink || !playerClose) {
+            return;
+        }
+
+        const toYouTubeEmbedUrl = (url) => {
+            const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&?/]+)/i);
+            if (!match || !match[1]) {
+                return null;
+            }
+
+            return `https://www.youtube.com/embed/${match[1]}?autoplay=1&rel=0`;
+        };
+
+        playButtons.forEach((button) => {
+            button.addEventListener("click", () => {
+                const playbackUrl = button.dataset.playbackUrl;
+                const embedUrl = playbackUrl ? toYouTubeEmbedUrl(playbackUrl) : null;
+
+                if (!embedUrl) {
+                    return;
+                }
+
+                playerTitle.textContent = button.dataset.songTitle || "Now playing";
+                playerMeta.textContent = button.dataset.songArtist || "";
+                playerExternalLink.href = playbackUrl;
+                playerFrame.src = embedUrl;
+                player.hidden = false;
+                player.scrollIntoView({ behavior: "smooth", block: "nearest" });
+            });
+        });
+
+        playerClose.addEventListener("click", () => {
+            playerFrame.src = "";
+            playerExternalLink.href = "#";
+            player.hidden = true;
+        });
+    })();
+</script>
