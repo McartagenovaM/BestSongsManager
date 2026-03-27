@@ -1,0 +1,143 @@
+using System.Text.Json;
+using SongManager.Models;
+
+namespace SongManager.Services;
+
+public class JsonSongService : ISongService
+{
+    private readonly string _jsonFilePath;
+    private readonly object _fileLock = new();
+
+    public JsonSongService(IWebHostEnvironment environment)
+    {
+        var dataDirectory = Path.Combine(environment.ContentRootPath, "Data");
+        _jsonFilePath = Path.Combine(dataDirectory, "songs.json");
+
+        if (!Directory.Exists(dataDirectory))
+        {
+            Directory.CreateDirectory(dataDirectory);
+        }
+    }
+
+    public async Task<List<Song>> GetAllSongsAsync()
+    {
+        return await LoadSongsAsync();
+    }
+
+    public async Task<Song?> GetSongByIdAsync(int id)
+    {
+        var songs = await LoadSongsAsync();
+        return songs.FirstOrDefault(s => s.Id == id);
+    }
+
+    public async Task<Song> CreateSongAsync(Song song)
+    {
+        var songs = await LoadSongsAsync();
+        song.Id = songs.Count > 0 ? songs.Max(s => s.Id) + 1 : 1;
+        songs.Add(song);
+        await SaveSongsAsync(songs);
+        return song;
+    }
+
+    public async Task<Song> UpdateSongAsync(Song song)
+    {
+        var songs = await LoadSongsAsync();
+        var index = songs.FindIndex(s => s.Id == song.Id);
+        if (index >= 0)
+        {
+            songs[index] = song;
+            await SaveSongsAsync(songs);
+        }
+        return song;
+    }
+
+    public async Task DeleteSongAsync(int id)
+    {
+        var songs = await LoadSongsAsync();
+        songs.RemoveAll(s => s.Id == id);
+        await SaveSongsAsync(songs);
+    }
+
+    public async Task<Song?> ToggleFavoriteAsync(int id)
+    {
+        var songs = await LoadSongsAsync();
+        var song = songs.FirstOrDefault(s => s.Id == id);
+        if (song != null)
+        {
+            song.IsFavorite = !song.IsFavorite;
+            await SaveSongsAsync(songs);
+        }
+        return song;
+    }
+
+    public async Task<List<Song>> GetFavoritesAsync()
+    {
+        var songs = await LoadSongsAsync();
+        return songs.Where(s => s.IsFavorite).ToList();
+    }
+
+    public async Task<List<Song>> SearchSongsAsync(string query)
+    {
+        var songs = await LoadSongsAsync();
+        var lowerQuery = query.ToLower();
+        return songs.Where(s =>
+            s.Title.ToLower().Contains(lowerQuery) ||
+            s.Artist.ToLower().Contains(lowerQuery) ||
+            s.Album.ToLower().Contains(lowerQuery) ||
+            s.Genre.ToLower().Contains(lowerQuery)
+        ).ToList();
+    }
+
+    private Task<List<Song>> LoadSongsAsync()
+    {
+        return Task.Run(() =>
+        {
+            lock (_fileLock)
+            {
+                try
+                {
+                    if (!File.Exists(_jsonFilePath))
+                    {
+                        return new List<Song>();
+                    }
+
+                    var json = File.ReadAllText(_jsonFilePath);
+                    if (string.IsNullOrWhiteSpace(json))
+                    {
+                        return new List<Song>();
+                    }
+
+                    var songs = JsonSerializer.Deserialize<List<Song>>(json);
+                    return songs ?? new List<Song>();
+                }
+                catch (JsonException)
+                {
+                    return new List<Song>();
+                }
+                catch (IOException)
+                {
+                    return new List<Song>();
+                }
+            }
+        });
+    }
+
+    private Task SaveSongsAsync(List<Song> songs)
+    {
+        return Task.Run(() =>
+        {
+            lock (_fileLock)
+            {
+                try
+                {
+                    var json = JsonSerializer.Serialize(songs, new JsonSerializerOptions { WriteIndented = true });
+                    File.WriteAllText(_jsonFilePath, json);
+                }
+                catch (IOException)
+                {
+                    // Handle file write errors gracefully
+                }
+            }
+        });
+    }
+}

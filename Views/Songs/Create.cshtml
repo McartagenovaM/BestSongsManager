@@ -1,0 +1,49 @@
+@model SongManager.Models.Song
+@{
+    ViewData["Title"] = "Create Song";
+}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <h1>Add New Song</h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <form method="post" action="/Songs/Create">
+            <div class="mb-3">
+                <label for="Title" class="form-label">Title</label>
+                <input type="text" class="form-control" id="Title" name="Title" value="@Model.Title" required />
+            </div>
+            <div class="mb-3">
+                <label for="Artist" class="form-label">Artist</label>
+                <input type="text" class="form-control" id="Artist" name="Artist" value="@Model.Artist" required />
+            </div>
+            <div class="mb-3">
+                <label for="Album" class="form-label">Album</label>
+                <input type="text" class="form-control" id="Album" name="Album" value="@Model.Album" />
+            </div>
+            <div class="mb-3">
+                <label for="Genre" class="form-label">Genre</label>
+                <input type="text" class="form-control" id="Genre" name="Genre" value="@Model.Genre" />
+            </div>
+            <div class="mb-3">
+                <label for="Year" class="form-label">Year</label>
+                <input type="number" class="form-control" id="Year" name="Year" value="@Model.Year" />
+            </div>
+            <div class="mb-3">
+                <label for="Notes" class="form-label">Notes</label>
+                <textarea class="form-control" id="Notes" name="Notes" rows="3">@Model.Notes</textarea>
+            </div>
+            <div class="mb-3">
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="IsFavorite" name="IsFavorite" @(Model.IsFavorite ? "checked" : "") />
+                    <label class="form-check-label" for="IsFavorite">Mark as Favorite</label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Create Song</button>
+            <a href="/Songs" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>

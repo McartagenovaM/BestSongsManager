@@ -1,0 +1,52 @@
+[
+  {
+    "id": 1,
+    "title": "Bohemian Rhapsody",
+    "artist": "Queen",
+    "album": "A Night at the Opera",
+    "genre": "Rock",
+    "year": 1975,
+    "isFavorite": true,
+    "notes": "Epic operatic rock masterpiece"
+  },
+  {
+    "id": 2,
+    "title": "Imagine",
+    "artist": "John Lennon",
+    "album": "Imagine",
+    "genre": "Rock",
+    "year": 1971,
+    "isFavorite": true,
+    "notes": "Iconic peace anthem"
+  },
+  {
+    "id": 3,
+    "title": "Stairway to Heaven",
+    "artist": "Led Zeppelin",
+    "album": "Led Zeppelin IV",
+    "genre": "Rock",
+    "year": 1971,
+    "isFavorite": false,
+    "notes": "Progressive rock masterpiece"
+  },
+  {
+    "id": 4,
+    "title": "Hotel California",
+    "artist": "Eagles",
+    "album": "Hotel California",
+    "genre": "Rock",
+    "year": 1976,
+    "isFavorite": true,
+    "notes": "Dark and mysterious"
+  },
+  {
+    "id": 5,
+    "title": "Billie Jean",
+    "artist": "Michael Jackson",
+    "album": "Thriller",
+    "genre": "Pop",
+    "year": 1983,
+    "isFavorite": false,
+    "notes": "King of Pop classic"
+  }
+]

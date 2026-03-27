@@ -1,0 +1,69 @@
+@model SongManager.Models.Song
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <h1>@Model.Title</h1>
+        <p class="lead text-muted">by @Model.Artist</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <h6 class="text-muted">Album</h6>
+                        <p>@Model.Album</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-muted">Year</h6>
+                        <p>@Model.Year</p>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <h6 class="text-muted">Genre</h6>
+                        <p>@Model.Genre</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-muted">Favorite</h6>
+                        <p>
+                            @if (Model.IsFavorite)
+                            {
+                                <span class="badge bg-danger">Yes ★</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">No</span>
+                            }
+                        </p>
+                    </div>
+                </div>
+                @if (!string.IsNullOrEmpty(Model.Notes))
+                {
+                    <div class="mb-3">
+                        <h6 class="text-muted">Notes</h6>
+                        <p>@Model.Notes</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-4">
+    <a href="/Songs/Edit/@Model.Id" class="btn btn-warning">Edit</a>
+    <form method="post" action="/Songs/ToggleFavorite/@Model.Id" style="display:inline;">
+        <button type="submit" class="btn @(Model.IsFavorite ? "btn-danger" : "btn-success")">
+            @(Model.IsFavorite ? "Remove from Favorites" : "Add to Favorites")
+        </button>
+    </form>
+    <form method="post" action="/Songs/Delete/@Model.Id" style="display:inline;">
+        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this song?')">Delete</button>
+    </form>
+    <a href="/Songs" class="btn btn-secondary">Back to Songs</a>
+</div>
